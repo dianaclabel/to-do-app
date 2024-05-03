@@ -7,6 +7,7 @@ const ElementIDs = {
   TodoList: ".todo-list",
   NewTodoInput: "#new-todo-input",
 };
+
 /**
  *
  * @param { String }elementId
@@ -27,6 +28,7 @@ export const App = (elementId) => {
 
   //Referencias HTML
   const newDescriptionInput = document.querySelector(ElementIDs.NewTodoInput);
+  const todoListUl = document.querySelector(ElementIDs.TodoList);
 
   //Listeners
   newDescriptionInput.addEventListener("keyup", (event) => {
@@ -37,5 +39,20 @@ export const App = (elementId) => {
     todoStore.addTodo(event.target.value);
     displayTodos();
     event.target.value = "";
+  });
+
+  todoListUl.addEventListener("click", (event) => {
+    const element = event.target.closest("[data-id]");
+    todoStore.toggleTodo(element.getAttribute("data-id"));
+    displayTodos();
+  });
+
+  todoListUl.addEventListener("click", (event) => {
+    const isDestroyElement = event.target.className === "destroy";
+    const element = event.target.closest("[data-id]");
+    if (!element || !isDestroyElement) return;
+    todoStore.deleteTodo(element.getAttribute("data-id"));
+
+    displayTodos();
   });
 };
