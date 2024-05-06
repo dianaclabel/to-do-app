@@ -4,8 +4,10 @@ import todoStore from "../store/todo.store";
 import { renderTodos } from "./use-cases";
 
 const ElementIDs = {
+  ClearCompletedButton: ".clear-completed",
   TodoList: ".todo-list",
   NewTodoInput: "#new-todo-input",
+  TodoFilters: "filtro",
 };
 
 /**
@@ -27,8 +29,13 @@ export const App = (elementId) => {
   })();
 
   //Referencias HTML
+
   const newDescriptionInput = document.querySelector(ElementIDs.NewTodoInput);
   const todoListUl = document.querySelector(ElementIDs.TodoList);
+  const clearCompletedButton = document.querySelector(
+    ElementIDs.ClearCompletedButton
+  );
+  const filtersUL = document.querySelectorAll(ElementIDs.TodoFilters, () => {});
 
   //Listeners
   newDescriptionInput.addEventListener("keyup", (event) => {
@@ -53,6 +60,12 @@ export const App = (elementId) => {
     if (!element || !isDestroyElement) return;
     todoStore.deleteTodo(element.getAttribute("data-id"));
 
+    displayTodos();
+  });
+
+  clearCompletedButton.addEventListener("click", () => {
+    console.log("hola");
+    todoStore.deleteCompleted();
     displayTodos();
   });
 };
