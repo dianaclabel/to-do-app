@@ -1,13 +1,13 @@
 // Esto solo funciona vite https://vitejs.dev/guide/assets.html#importing-asset-as-string
 import html from "./app.html?raw"; // Nos permite importar un archivo HTML, el HTML se convierte en string.HTML podemos inyectarlo en el JS
-import todoStore from "../store/todo.store";
+import todoStore, { Filters } from "../store/todo.store";
 import { renderTodos } from "./use-cases";
 
 const ElementIDs = {
   ClearCompletedButton: ".clear-completed",
   TodoList: ".todo-list",
   NewTodoInput: "#new-todo-input",
-  TodoFilters: "filtro",
+  TodoFilters: ".filtro",
 };
 
 /**
@@ -35,7 +35,7 @@ export const App = (elementId) => {
   const clearCompletedButton = document.querySelector(
     ElementIDs.ClearCompletedButton
   );
-  const filtersUL = document.querySelectorAll(ElementIDs.TodoFilters, () => {});
+  const filtersList = document.querySelectorAll(ElementIDs.TodoFilters);
 
   //Listeners
   newDescriptionInput.addEventListener("keyup", (event) => {
@@ -67,5 +67,27 @@ export const App = (elementId) => {
     console.log("hola");
     todoStore.deleteCompleted();
     displayTodos();
+  });
+
+  filtersList.forEach((element) => {
+    element.addEventListener("click", (element) => {
+      filtersList.forEach((el) => el.classList.remove("selected"));
+      element.target.classList.add("selected");
+
+      console.log(element.target.text);
+
+      switch (element.target.text) {
+        case "Todos":
+          todoStore.setFilter(Filters.All);
+          break;
+        case "Pendientes":
+          todoStore.setFilter(Filters.Pending);
+          break;
+        case "Completados":
+          todoStore.setFilter(Filters.Completed);
+          break;
+      }
+      displayTodos();
+    });
   });
 };
